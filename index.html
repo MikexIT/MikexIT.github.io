@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+<body>
+    <div style="display: none">
+        <img id="imageX"
+            src="https://amiel.club/uploads/posts/2022-03/1647714705_39-amiel-club-p-krestik-kartinki-41.png" />
+        <img id="imageT" src="https://avatanplus.com/files/resources/original/5b76a0aa25ce6165476398ab.png" />
+    </div>
+    <canvas id="box" width="300" height="300"></canvas>
+
+    <script>
+        /** @type {HTMLCanvasElement} */
+        const canvas = document.getElementById('box');
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'green';
+        ctx.fillRect(0, 0, 300, 300);
+        ctx.moveTo(100, 0);
+        ctx.lineTo(100, 300);
+        ctx.stroke();
+        ctx.moveTo(200, 0);
+        ctx.lineTo(200, 300);
+        ctx.stroke();
+        ctx.moveTo(0, 100);
+        ctx.lineTo(300, 100);
+        ctx.stroke();
+        ctx.moveTo(0, 200);
+        ctx.lineTo(300, 200);
+        ctx.stroke();
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.lineWidth = 30;
+            ctx.strokeStyle = 'red';
+            ctx.stroke();
+        }
+        const imageX = document.getElementById('imageX');
+        const imageT = document.getElementById('imageT');
+        let currentImage = imageX;
+        const kill = [];
+        const win = [
+            [0, 1, 2, 50, 0, 50, 300],
+            [3, 4, 5, 150, 0, 150, 300],
+            [6, 7, 8, 250, 0, 250, 300],
+            [0, 3, 6, 0, 50, 300, 50],
+            [1, 4, 7, 0, 150, 300, 150],
+            [2, 5, 8, 0, 250, 300, 250],
+            [0, 4, 8, 0, 0, 300, 300],
+            [6, 4, 2, 300, 0, 0, 300]
+        ];
+        let finish=false;
+
+        canvas.addEventListener('mousedown', ev => {
+            console.log(ev)
+            if (finish)return;
+            const x = Math.floor(ev.x / 100);
+            const y = Math.floor(ev.y / 100);
+            const pos = x * 3 + y;
+            if (kill[pos]) return;
+            kill[pos] = currentImage;
+            ctx.drawImage(currentImage, x * 100, y * 100, 100, 100);
+            if (currentImage === imageX) currentImage = imageT; else currentImage = imageX;
+            for (let i = 0; i < win.length; i++) {
+                const line = win[i];
+                if (kill[line[0]] && kill[line[0]] === kill[line[1]] && kill[line[0]] === kill[line[2]]) {
+                    drawLine(line[3], line[4], line[5], line[6]);
+                    finish=true;
+                    return;
+                }
+            }
+            // if (kill[0] && kill[0] === kill[1] && kill[0] === kill[2]) drawLine(50, 0, 50, 300);
+            // if (kill[3] && kill[3] === kill[4] && kill[3] === kill[5]) drawLine(150, 0, 150, 300);
+            // if (kill[6] && kill[6] === kill[7] && kill[6] === kill[8]) drawLine(250, 0, 250, 300);
+            // if (kill[0] && kill[0] === kill[3] && kill[0] === kill[6]) drawLine(0, 50, 300, 50);
+            // if (kill[1] && kill[1] === kill[4] && kill[1] === kill[7]) drawLine(0, 150, 300, 150);
+            // if (kill[2] && kill[2] === kill[5] && kill[2] === kill[8]) drawLine(0, 250, 300, 250);
+            // if (kill[0] && kill[0] === kill[4] && kill[0] === kill[8]) drawLine(0, 0, 300, 300);
+            // if (kill[6] && kill[6] === kill[4] && kill[6] === kill[2]) drawLine(300, 0, 0, 300);
+        })
+    </script>
+</body>
+
+</html>
